@@ -1,92 +1,66 @@
-// Initialize task and XP data
-let userTasks = [];
-let xp = 0;
-let questsCompleted = 0;
-let level = 1; // Start level at 1
-const XP_TO_LEVEL_UP = 25;
+let xp = parseInt(localStorage.getItem("xp")) || 0;
+let level = parseInt(localStorage.getItem("level")) || 1;
+let taskList = JSON.parse(localStorage.getItem("taskList")) || [];
 
-// Get references to elements
-const rollButton = document.getElementById('roll-btn');
-const taskOutput = document.getElementById('task-output');
-const addTaskButton = document.getElementById('add-task-btn');
-const userTaskInput = document.getElementById('user-task');
-const xpBar = document.getElementById('xp-bar');
-const xpText = document.getElementById('xp-text');
-const levelText = document.getElementById('level-text'); // Level text display
-const completeQuestButton = document.getElementById('complete-quest-btn');
-const taskList = document.getElementById('task-list');
-
-// Function to roll and choose a task randomly from user tasks
-function rollTask() {
-    if (userTasks.length === 0) {
-        taskOutput.textContent = "Please add some tasks first!";
-        return;
-    }
-    const randomTask = userTasks[Math.floor(Math.random() * userTasks.length)];
-    taskOutput.textContent = randomTask;
+function updateXPBar() {
+    const xpBar = document.getElementById("xp-bar");
+    const xpPercent = (xp / 25) * 100;
+    xpBar.style.width = xpPercent + "%";
+    document.getElementById("level").innerText = level;
 }
 
-// Function to add a user task to the list
-function addUserTask() {
-    const task = userTaskInput.value.trim();
-    if (task) {
-        userTasks.push(task);  // Add task to the array
-        userTaskInput.value = '';  // Clear input field
-        updateTaskList();  // Update the task list display
-        taskOutput.textContent = `You added: ${task}`;  // Show the task added
-    } else {
-        taskOutput.textContent = "Please enter a valid task.";  // Show a message if input is empty
+function completeQuest() {
+    xp++;
+    if (xp >= 25) {
+        level++;
+        xp = 0;
+    }
+    localStorage.setItem("xp", xp);
+    localStorage.setItem("level", level);
+    updateXPBar();
+}
+
+function addTask() {
+    const input = document.getElementById("task-input");
+    const task = input.value.trim();
+    if (task !== "") {
+        taskList.push(task);
+        localStorage.setItem("taskList", JSON.stringify(taskList));
+        renderTaskList();
+        input.value = "";
     }
 }
 
-// Function to update the task list on the UI
-function updateTaskList() {
-    taskList.innerHTML = ''; // Clear the list
-    userTasks.forEach((task, index) => {
-        const taskItem = document.createElement('li');
-        taskItem.innerHTML = `
-            ${task} <button onclick="removeTask(${index})">Remove</button>
-        `;
-        taskList.appendChild(taskItem);
+function removeTask(index) {
+    taskList.splice(index, 1);
+    localStorage.setItem("taskList", JSON.stringify(taskList));
+    renderTaskList();
+}
+
+function renderTaskList() {
+    const ul = document.getElementById("task-list");
+    ul.innerHTML = "";
+    taskList.forEach((task, index) => {
+        const li = document.createElement("li");
+        li.innerText = task;
+        const removeBtn = document.createElement("button");
+        removeBtn.innerText = "❌";
+        removeBtn.onclick = () => removeTask(index);
+        li.appendChild(removeBtn);
+        ul.appendChild(li);
     });
 }
 
-// Function to remove a task from the list
-function removeTask(index) {
-    userTasks.splice(index, 1);  // Remove the task from the array
-    updateTaskList();  // Update the task list display
-}
-
-// Function to handle quest completion
-function completeQuest() {
-    if (questsCompleted < XP_TO_LEVEL_UP) {
-        xp += 1;  // Increase XP by 1 for each quest completed
-        questsCompleted += 1;
+function rollTask() {
+    if (taskList.length === 0) {
+        alert("No tasks to choose from!");
+        return;
     }
-
-    if (xp >= XP_TO_LEVEL_UP) {
-        xp = 0;  // Reset XP
-        questsCompleted = 0;  // Reset quest count
-        level += 1;  // Increment level by 1
-        alert("Congratulations! You've leveled up!");
-    }
-
-    updateXPBar();  // Update the XP bar and text
-    updateLevelText();  // Update the level text
+    const randomIndex = Math.floor(Math.random() * taskList.length);
+    const selectedTask = taskList[randomIndex];
+    document.getElementById("rolled-task").innerText = `🎲 Today's Quest: ${selectedTask}`;
 }
 
-// Function to update the XP bar display
-function updateXPBar() {
-    xpBar.style.width = (xp / XP_TO_LEVEL_UP) * 100 + '%';  // Set the XP bar width
-    xpText.textContent = `XP: ${xp} / ${XP_TO_LEVEL_UP}`;  // Update the XP text
-}
-
-// Function to update the level text
-function updateLevelText() {
-    levelText.textContent = `Level: ${level}`;  // Display current level
-}
-
-// Event listeners
-rollButton.addEventListener('click', rollTask);
-addTaskButton.addEventListener('click', addUserTask);
-completeQuestButton.addEventListener('click', completeQuest);
+// On page load
+renderTaskList();
+updateXPBar();
