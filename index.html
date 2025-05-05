@@ -3,34 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Quest - Gamify Your Chores</title>
+    <title>Task Quest</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
     <div class="container">
         <h1>Task Quest</h1>
-        <p class="intro">Transform your chores into epic quests!</p>
-
-        <!-- Task List Section -->
+        
         <div class="task-section">
-            <h3>Your Tasks</h3>
-            <input type="text" id="user-task" placeholder="Enter your task...">
-            <button id="add-task-btn">Add Task</button>
-            <ul id="task-list"></ul>
-            <button id="roll-btn">Roll for Quest</button>
-            <p id="task-output"></p>
+            <input type="text" id="taskInput" placeholder="Enter a new task">
+            <button id="addTask">Add Task</button>
+            <ul id="taskList"></ul>
         </div>
 
-        <!-- XP Bar Section -->
-        <div class="xp-bar-section">
-            <h3>Your XP Progress</h3>
-            <p id="level-text">Level: 1</p> <!-- Level Counter -->
-            <div class="xp-bar-background">
-                <div id="xp-bar" class="xp-bar"></div>
-            </div>
-            <p id="xp-text">XP: 0 / 25</p>
-            <button id="complete-quest-btn">Completed Quest</button>
+        <div class="xp-section">
+            <div id="xpBar" class="xp-bar"></div>
+            <p>XP: <span id="xpDisplay">0</span></p>
+            <p>Level: <span id="level">1</span></p>
+        </div>
+
+        <div class="buttons">
+            <button id="rollTask">Roll to Choose Task</button>
+            <button id="completeQuest">Complete Quest</button>
         </div>
     </div>
 
