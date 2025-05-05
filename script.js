@@ -1,66 +1,78 @@
-let xp = parseInt(localStorage.getItem("xp")) || 0;
-let level = parseInt(localStorage.getItem("level")) || 1;
-let taskList = JSON.parse(localStorage.getItem("taskList")) || [];
+let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+let xp = parseInt(localStorage.getItem('xp')) || 0;
+let level = parseInt(localStorage.getItem('level')) || 1;
 
-function updateXPBar() {
-    const xpBar = document.getElementById("xp-bar");
-    const xpPercent = (xp / 25) * 100;
-    xpBar.style.width = xpPercent + "%";
-    document.getElementById("level").innerText = level;
-}
+const taskList = document.getElementById("taskList");
+const xpBar = document.getElementById("xpBar");
+const levelDisplay = document.getElementById("level");
+const taskInput = document.getElementById("taskInput");
 
-function completeQuest() {
-    xp++;
-    if (xp >= 25) {
-        level++;
-        xp = 0;
-    }
-    localStorage.setItem("xp", xp);
-    localStorage.setItem("level", level);
-    updateXPBar();
-}
-
-function addTask() {
-    const input = document.getElementById("task-input");
-    const task = input.value.trim();
-    if (task !== "") {
-        taskList.push(task);
-        localStorage.setItem("taskList", JSON.stringify(taskList));
-        renderTaskList();
-        input.value = "";
-    }
-}
-
-function removeTask(index) {
-    taskList.splice(index, 1);
-    localStorage.setItem("taskList", JSON.stringify(taskList));
-    renderTaskList();
-}
-
-function renderTaskList() {
-    const ul = document.getElementById("task-list");
-    ul.innerHTML = "";
-    taskList.forEach((task, index) => {
-        const li = document.createElement("li");
-        li.innerText = task;
-        const removeBtn = document.createElement("button");
-        removeBtn.innerText = "❌";
-        removeBtn.onclick = () => removeTask(index);
-        li.appendChild(removeBtn);
-        ul.appendChild(li);
+// Render tasks
+function renderTasks() {
+  taskList.innerHTML = "";
+  tasks.forEach((task, index) => {
+    const li = document.createElement("li");
+    li.textContent = task;
+    li.classList.add("task-item");
+    li.addEventListener("click", () => {
+      tasks.splice(index, 1);
+      saveProgress();
+      renderTasks();
     });
+    taskList.appendChild(li);
+  });
 }
 
-function rollTask() {
-    if (taskList.length === 0) {
-        alert("No tasks to choose from!");
-        return;
-    }
-    const randomIndex = Math.floor(Math.random() * taskList.length);
-    const selectedTask = taskList[randomIndex];
-    document.getElementById("rolled-task").innerText = `🎲 Today's Quest: ${selectedTask}`;
+// Add task
+document.getElementById("addTask").addEventListener("click", () => {
+  const task = taskInput.value.trim();
+  if (task) {
+    tasks.push(task);
+    taskInput.value = "";
+    saveProgress();
+    renderTasks();
+  }
+});
+
+// Roll to choose task
+document.getElementById("rollTask").addEventListener("click", () => {
+  if (tasks.length === 0) {
+    alert("No tasks to choose from!");
+    return;
+  }
+  const randomIndex = Math.floor(Math.random() * tasks.length);
+  alert(`🎲 Your quest is: "${tasks[randomIndex]}"`);
+});
+
+// Complete quest (gain XP)
+document.getElementById("completeQuest").addEventListener("click", () => {
+  gainXP(4); // 25 tasks x 4xp = 100xp to level up
+});
+
+// XP gain and level up logic
+function gainXP(amount) {
+  xp += amount;
+  if (xp >= 100) {
+    xp -= 100;
+    level++;
+  }
+  saveProgress();
+  updateXPDisplay();
 }
 
-// On page load
-renderTaskList();
-updateXPBar();
+function updateXPDisplay() {
+  xpBar.style.width = `${xp}%`;
+  xpBar.textContent = `${xp} XP`;
+  levelDisplay.textContent = level;
+}
+
+// Save everything
+function saveProgress() {
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+  localStorage.setItem('xp', xp.toString());
+  localStorage.setItem('level', level.toString());
+}
+
+// Initial load
+renderTasks();
+updateXPDisplay();
