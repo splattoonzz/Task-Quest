@@ -1,8 +1,8 @@
-// Initialize task and XP data
-let userTasks = [];
-let xp = 0;
-let questsCompleted = 0;
-let level = 1; // Start level at 1
+// Initialize task and XP data from localStorage or set defaults
+let userTasks = JSON.parse(localStorage.getItem('userTasks')) || [];
+let xp = parseInt(localStorage.getItem('xp')) || 0;
+let questsCompleted = parseInt(localStorage.getItem('questsCompleted')) || 0;
+let level = parseInt(localStorage.getItem('level')) || 1;
 const XP_TO_LEVEL_UP = 25;
 
 // Get references to elements
@@ -12,7 +12,7 @@ const addTaskButton = document.getElementById('add-task-btn');
 const userTaskInput = document.getElementById('user-task');
 const xpBar = document.getElementById('xp-bar');
 const xpText = document.getElementById('xp-text');
-const levelText = document.getElementById('level-text'); // Level text display
+const levelText = document.getElementById('level-text');
 const completeQuestButton = document.getElementById('complete-quest-btn');
 const taskList = document.getElementById('task-list');
 
@@ -30,18 +30,19 @@ function rollTask() {
 function addUserTask() {
     const task = userTaskInput.value.trim();
     if (task) {
-        userTasks.push(task);  // Add task to the array
-        userTaskInput.value = '';  // Clear input field
-        updateTaskList();  // Update the task list display
-        taskOutput.textContent = `You added: ${task}`;  // Show the task added
+        userTasks.push(task);
+        userTaskInput.value = '';
+        updateTaskList();
+        taskOutput.textContent = `You added: ${task}`;
+        saveProgress(); // ✅ Save tasks
     } else {
-        taskOutput.textContent = "Please enter a valid task.";  // Show a message if input is empty
+        taskOutput.textContent = "Please enter a valid task.";
     }
 }
 
 // Function to update the task list on the UI
 function updateTaskList() {
-    taskList.innerHTML = ''; // Clear the list
+    taskList.innerHTML = '';
     userTasks.forEach((task, index) => {
         const taskItem = document.createElement('li');
         taskItem.innerHTML = `
@@ -53,38 +54,53 @@ function updateTaskList() {
 
 // Function to remove a task from the list
 function removeTask(index) {
-    userTasks.splice(index, 1);  // Remove the task from the array
-    updateTaskList();  // Update the task list display
+    userTasks.splice(index, 1);
+    updateTaskList();
+    saveProgress(); // ✅ Save after removing
 }
 
 // Function to handle quest completion
 function completeQuest() {
     if (questsCompleted < XP_TO_LEVEL_UP) {
-        xp += 1;  // Increase XP by 1 for each quest completed
+        xp += 1;
         questsCompleted += 1;
     }
 
     if (xp >= XP_TO_LEVEL_UP) {
-        xp = 0;  // Reset XP
-        questsCompleted = 0;  // Reset quest count
-        level += 1;  // Increment level by 1
+        xp = 0;
+        questsCompleted = 0;
+        level += 1;
         alert("Congratulations! You've leveled up!");
     }
 
-    updateXPBar();  // Update the XP bar and text
-    updateLevelText();  // Update the level text
+    updateXPBar();
+    updateLevelText();
+    saveProgress(); // ✅ Save progress after XP gain
 }
 
 // Function to update the XP bar display
 function updateXPBar() {
-    xpBar.style.width = (xp / XP_TO_LEVEL_UP) * 100 + '%';  // Set the XP bar width
-    xpText.textContent = `XP: ${xp} / ${XP_TO_LEVEL_UP}`;  // Update the XP text
+    xpBar.style.width = (xp / XP_TO_LEVEL_UP) * 100 + '%';
+    xpText.textContent = `XP: ${xp} / ${XP_TO_LEVEL_UP}`;
 }
 
 // Function to update the level text
 function updateLevelText() {
-    levelText.textContent = `Level: ${level}`;  // Display current level
+    levelText.textContent = `Level: ${level}`;
 }
+
+// ✅ Function to save to localStorage
+function saveProgress() {
+    localStorage.setItem('userTasks', JSON.stringify(userTasks));
+    localStorage.setItem('xp', xp.toString());
+    localStorage.setItem('questsCompleted', questsCompleted.toString());
+    localStorage.setItem('level', level.toString());
+}
+
+// ✅ Load everything on first load
+updateTaskList();
+updateXPBar();
+updateLevelText();
 
 // Event listeners
 rollButton.addEventListener('click', rollTask);
