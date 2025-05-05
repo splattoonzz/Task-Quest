@@ -1,11 +1,12 @@
-// Initialize task and XP data from localStorage or set defaults
+// Load saved data or use defaults
 let userTasks = JSON.parse(localStorage.getItem('userTasks')) || [];
 let xp = parseInt(localStorage.getItem('xp')) || 0;
 let questsCompleted = parseInt(localStorage.getItem('questsCompleted')) || 0;
 let level = parseInt(localStorage.getItem('level')) || 1;
+
 const XP_TO_LEVEL_UP = 25;
 
-// Get references to elements
+// Get references
 const rollButton = document.getElementById('roll-btn');
 const taskOutput = document.getElementById('task-output');
 const addTaskButton = document.getElementById('add-task-btn');
@@ -15,92 +16,105 @@ const xpText = document.getElementById('xp-text');
 const levelText = document.getElementById('level-text');
 const completeQuestButton = document.getElementById('complete-quest-btn');
 const taskList = document.getElementById('task-list');
+const characterSprite = document.getElementById('character-sprite');
 
-// Function to roll and choose a task randomly from user tasks
+// Roll a random task
 function rollTask() {
-    if (userTasks.length === 0) {
-        taskOutput.textContent = "Please add some tasks first!";
-        return;
-    }
-    const randomTask = userTasks[Math.floor(Math.random() * userTasks.length)];
-    taskOutput.textContent = randomTask;
+  if (userTasks.length === 0) {
+    taskOutput.textContent = "Please add some tasks first!";
+    return;
+  }
+  const randomTask = userTasks[Math.floor(Math.random() * userTasks.length)];
+  taskOutput.textContent = randomTask;
 }
 
-// Function to add a user task to the list
+// Add a new task
 function addUserTask() {
-    const task = userTaskInput.value.trim();
-    if (task) {
-        userTasks.push(task);
-        userTaskInput.value = '';
-        updateTaskList();
-        taskOutput.textContent = `You added: ${task}`;
-        saveProgress(); // ✅ Save tasks
-    } else {
-        taskOutput.textContent = "Please enter a valid task.";
-    }
-}
-
-// Function to update the task list on the UI
-function updateTaskList() {
-    taskList.innerHTML = '';
-    userTasks.forEach((task, index) => {
-        const taskItem = document.createElement('li');
-        taskItem.innerHTML = `
-            ${task} <button onclick="removeTask(${index})">Remove</button>
-        `;
-        taskList.appendChild(taskItem);
-    });
-}
-
-// Function to remove a task from the list
-function removeTask(index) {
-    userTasks.splice(index, 1);
+  const task = userTaskInput.value.trim();
+  if (task) {
+    userTasks.push(task);
+    userTaskInput.value = '';
     updateTaskList();
-    saveProgress(); // ✅ Save after removing
+    taskOutput.textContent = `You added: ${task}`;
+    saveProgress();
+  } else {
+    taskOutput.textContent = "Please enter a valid task.";
+  }
 }
 
-// Function to handle quest completion
+// Show task list
+function updateTaskList() {
+  taskList.innerHTML = '';
+  userTasks.forEach((task, index) => {
+    const taskItem = document.createElement('li');
+    taskItem.innerHTML = `
+      ${task} <button onclick="removeTask(${index})">Remove</button>
+    `;
+    taskList.appendChild(taskItem);
+  });
+}
+
+// Remove a task
+function removeTask(index) {
+  userTasks.splice(index, 1);
+  updateTaskList();
+  saveProgress();
+}
+
+// Complete quest
 function completeQuest() {
-    if (questsCompleted < XP_TO_LEVEL_UP) {
-        xp += 1;
-        questsCompleted += 1;
-    }
+  if (questsCompleted < XP_TO_LEVEL_UP) {
+    xp += 1;
+    questsCompleted += 1;
+  }
 
-    if (xp >= XP_TO_LEVEL_UP) {
-        xp = 0;
-        questsCompleted = 0;
-        level += 1;
-        alert("Congratulations! You've leveled up!");
-    }
+  if (xp >= XP_TO_LEVEL_UP) {
+    xp = 0;
+    questsCompleted = 0;
+    level += 1;
+    alert("🎉 You've leveled up!");
+  }
 
-    updateXPBar();
-    updateLevelText();
-    saveProgress(); // ✅ Save progress after XP gain
+  updateXPBar();
+  updateLevelText();
+  updateCharacterSprite();
+  saveProgress();
 }
 
-// Function to update the XP bar display
+// XP and level display
 function updateXPBar() {
-    xpBar.style.width = (xp / XP_TO_LEVEL_UP) * 100 + '%';
-    xpText.textContent = `XP: ${xp} / ${XP_TO_LEVEL_UP}`;
+  xpBar.style.width = (xp / XP_TO_LEVEL_UP) * 100 + '%';
+  xpText.textContent = `XP: ${xp} / ${XP_TO_LEVEL_UP}`;
 }
 
-// Function to update the level text
 function updateLevelText() {
-    levelText.textContent = `Level: ${level}`;
+  levelText.textContent = `Level: ${level}`;
 }
 
-// ✅ Function to save to localStorage
+// Optional: Character sprite evolves with level
+function updateCharacterSprite() {
+  if (level >= 5) {
+    characterSprite.src = 'sprites/level5.png';
+  } else if (level >= 3) {
+    characterSprite.src = 'sprites/level3.png';
+  } else {
+    characterSprite.src = 'sprites/level1.png';
+  }
+}
+
+// Save all progress
 function saveProgress() {
-    localStorage.setItem('userTasks', JSON.stringify(userTasks));
-    localStorage.setItem('xp', xp.toString());
-    localStorage.setItem('questsCompleted', questsCompleted.toString());
-    localStorage.setItem('level', level.toString());
+  localStorage.setItem('userTasks', JSON.stringify(userTasks));
+  localStorage.setItem('xp', xp);
+  localStorage.setItem('questsCompleted', questsCompleted);
+  localStorage.setItem('level', level);
 }
 
-// ✅ Load everything on first load
+// Load everything on start
 updateTaskList();
 updateXPBar();
 updateLevelText();
+updateCharacterSprite();
 
 // Event listeners
 rollButton.addEventListener('click', rollTask);
