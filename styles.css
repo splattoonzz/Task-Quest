@@ -105,3 +105,21 @@ input[type="text"] {
   font-style: italic;
   margin-top: 10px;
 }
+/* Restart Button */
+#restart-btn {
+  background-color: #ff8da1;
+  border: none;
+  color: white;
+  font-family: 'Press Start 2P', cursive;
+  padding: 10px 20px;
+  margin: 10px 5px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.6rem;
+}
+
+#restart-btn:hover {
+  background-color: #e6738e;
+}
+
