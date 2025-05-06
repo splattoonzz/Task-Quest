@@ -86,4 +86,28 @@ document.addEventListener("DOMContentLoaded", function () {
   addTaskBtn.addEventListener("click", addUserTask);
   rollBtn.addEventListener("click", rollTask);
   completeBtn.addEventListener("click", completeQuest);
+
+  const restartBtn = document.getElementById("restart-btn");  // Add this line to get the button reference
+
+// Reset progress (clear all saved data)
+function restartProgress() {
+  localStorage.removeItem("userTasks");
+  localStorage.removeItem("xp");
+  localStorage.removeItem("questsCompleted");
+  localStorage.removeItem("level");
+
+  // Reset variables to their initial state
+  userTasks = [];
+  xp = 0;
+  questsCompleted = 0;
+  level = 1;
+
+  // Update the UI after reset
+  updateXPBar();
+  updateTaskList();
+}
+
+// Add this event listener for the restart button
+restartBtn.addEventListener("click", restartProgress);
+
 });
