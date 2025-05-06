@@ -122,4 +122,92 @@ input[type="text"] {
 #restart-btn:hover {
   background-color: #e6738e;
 }
+/* Mobile Devices (max-width: 600px) */
+@media (max-width: 600px) {
+  /* Resize the character section */
+  #character-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+  }
+
+  #character-img {
+    width: 70%;  /* Reduce the image size */
+    height: auto;
+  }
+
+  #customize-btn {
+    padding: 10px;
+    font-size: 1.2rem; /* Make the button larger for easier tap */
+  }
+
+  /* Character Customization Modal adjustments */
+  #customization-modal {
+    padding: 10px;
+    width: 90%;  /* Use most of the screen width on small screens */
+  }
+
+  #customization-box {
+    width: 100%;
+    padding: 15px;
+  }
+
+  #customization-box h3 {
+    font-size: 1.3rem;  /* Adjust font size for small screens */
+  }
+
+  #customization-box h4 {
+    font-size: 1rem;
+  }
+
+  #customization-box img {
+    width: 50px; /* Make images smaller for mobile screens */
+    height: auto;
+  }
+
+  #customization-box button {
+    font-size: 1rem; /* Make buttons easier to tap */
+    padding: 8px;
+  }
+
+  /* Adjust buttons for better touchability */
+  button#hair-prev, button#hair-next, 
+  button#hat-prev, button#hat-next, 
+  button#face-prev, button#face-next, 
+  button#shirt-prev, button#shirt-next, 
+  button#bottoms-prev, button#bottoms-next {
+    width: 40px;
+    font-size: 1.5rem;  /* Increase button size for mobile */
+  }
+}
+
+/* Tablets (max-width: 768px) */
+@media (max-width: 768px) {
+  #character-section {
+    flex-direction: column;
+  }
+
+  #character-img {
+    width: 80%; /* Adjust image size for tablets */
+  }
+
+  #customize-btn {
+    font-size: 1.5rem;
+    padding: 12px;
+  }
+
+  #customization-box {
+    width: 80%;
+    padding: 20px;
+  }
+
+  #customization-box h3 {
+    font-size: 1.5rem;
+  }
+
+  #customization-box img {
+    width: 60px;
+  }
+}
 
