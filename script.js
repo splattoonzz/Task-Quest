@@ -134,4 +134,3 @@ function addSuggestedTask(task) {
   modal.style.display = "none";
   taskOutput.textContent = `You added: ${task}`;
 }
-                        
