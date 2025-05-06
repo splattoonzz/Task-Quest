@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const xpBar = document.getElementById("xp-bar");
   const xpText = document.getElementById("xp-text");
   const levelText = document.getElementById("level-text");
+  const restartBtn = document.getElementById("restart-btn");
 
   function saveProgress() {
     localStorage.setItem("userTasks", JSON.stringify(userTasks));
@@ -80,58 +81,58 @@ document.addEventListener("DOMContentLoaded", function () {
     levelText.textContent = `Level: ${level}`;
   }
 
-  updateXPBar();
-  updateTaskList();
+  function restartProgress() {
+    localStorage.removeItem("userTasks");
+    localStorage.removeItem("xp");
+    localStorage.removeItem("questsCompleted");
+    localStorage.removeItem("level");
 
+    userTasks = [];
+    xp = 0;
+    questsCompleted = 0;
+    level = 1;
+
+    updateXPBar();
+    updateTaskList();
+  }
+
+  // Task suggestions modal logic
+  const modal = document.getElementById("task-suggestions-modal");
+  const openBtn = document.getElementById("open-suggestions-btn");
+  const closeBtn = document.getElementById("close-suggestions");
+
+  if (openBtn && modal) {
+    openBtn.addEventListener("click", () => {
+      modal.style.display = "block";
+    });
+  }
+
+  if (closeBtn && modal) {
+    closeBtn.addEventListener("click", () => {
+      modal.style.display = "none";
+    });
+  }
+
+  window.addSuggestedTask = function (task) {
+    userTasks.push(task);
+    updateTaskList();
+    modal.style.display = "none";
+    taskOutput.textContent = `You added: ${task}`;
+  };
+
+  window.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      modal.style.display = "none";
+    }
+  });
+
+  // Event listeners
   addTaskBtn.addEventListener("click", addUserTask);
   rollBtn.addEventListener("click", rollTask);
   completeBtn.addEventListener("click", completeQuest);
+  restartBtn.addEventListener("click", restartProgress);
 
-  const restartBtn = document.getElementById("restart-btn");  // Add this line to get the button reference
-
-// Reset progress (clear all saved data)
-function restartProgress() {
-  localStorage.removeItem("userTasks");
-  localStorage.removeItem("xp");
-  localStorage.removeItem("questsCompleted");
-  localStorage.removeItem("level");
-
-  // Reset variables to their initial state
-  userTasks = [];
-  xp = 0;
-  questsCompleted = 0;
-  level = 1;
-
-  // Update the UI after reset
+  // Initial load
   updateXPBar();
   updateTaskList();
-}
-
-// Add this event listener for the restart button
-restartBtn.addEventListener("click", restartProgress);
-
-const modal = document.getElementById("task-suggestions-modal");
-const openBtn = document.getElementById("open-suggestions-btn");
-const closeBtn = document.getElementById("close-suggestions");
-
-openBtn.addEventListener("click", () => {
-  modal.style.display = "block";
-});
-
-closeBtn.addEventListener("click", () => {
-  modal.style.display = "none";
-});
-
-window.addEventListener("click", (event) => {
-  if (event.target === modal) {
-    modal.style.display = "none";
-  }
-});
-
-function addSuggestedTask(task) {
-  userTasks.push(task);
-  updateTaskList();
-  modal.style.display = "none";
-  taskOutput.textContent = `You added: ${task}`;
-}
 });
