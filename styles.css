@@ -229,46 +229,50 @@ input[type="text"] {
 #donation-btn:hover {
     background-color: #e6738e;
 }
-#common-tasks-popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #fff0f5;
-  border: 2px solid #ff8da1;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(255, 141, 161, 0.4);
-  z-index: 1000;
+.modal {
   display: none;
-  max-width: 300px;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(61, 28, 43, 0.7);
 }
 
-#common-tasks-popup h3 {
-  font-size: 0.8rem;
+.modal-content {
+  background-color: #fff0f5;
+  margin: 10% auto;
+  padding: 20px;
+  border: 2px solid #ff8da1;
+  width: 80%;
+  max-width: 400px;
+  border-radius: 12px;
+  text-align: left;
+}
+
+.modal-content h3 {
+  font-size: 1rem;
+  color: #ff8da1;
   margin-bottom: 10px;
 }
 
-#common-tasks-popup ul {
-  list-style: none;
-  padding: 0;
-  font-size: 0.6rem;
-}
-
-#common-tasks-popup li {
-  margin: 5px 0;
+#suggested-tasks li {
   cursor: pointer;
+  padding: 8px;
+  border-bottom: 1px dashed #ff8da1;
+  font-size: 0.6rem;
+  font-family: 'Press Start 2P', cursive;
+}
+
+#suggested-tasks li:hover {
   background-color: #ffe1e8;
-  border: 1px solid #ff8da1;
-  border-radius: 6px;
-  padding: 5px;
 }
 
-#common-tasks-popup li:hover {
-  background-color: #fdd2db;
+.close-btn {
+  float: right;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #ff8da1;
 }
-
-.hidden {
-  display: none;
-}
-
