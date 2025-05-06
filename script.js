@@ -109,5 +109,41 @@ function restartProgress() {
 
 // Add this event listener for the restart button
 restartBtn.addEventListener("click", restartProgress);
+const commonTasks = [
+  "Make your bed",
+  "Brush your teeth",
+  "Unload the dishwasher",
+  "Feed pets",
+  "Take out the trash",
+  "Water the plants",
+  "Do 5 minutes of tidying",
+  "Put away laundry",
+  "Clean your room",
+  "Prep a meal/snack",
+];
+
+document.getElementById("common-tasks-btn").addEventListener("click", () => {
+  const popup = document.getElementById("common-tasks-popup");
+  const list = document.getElementById("common-tasks-list");
+
+  list.innerHTML = ""; // Clear previous items
+
+  commonTasks.forEach(task => {
+    const li = document.createElement("li");
+    li.textContent = task;
+    li.addEventListener("click", () => {
+      userTasks.push(task);
+      updateTaskList();
+      popup.classList.add("hidden");
+    });
+    list.appendChild(li);
+  });
+
+  popup.classList.remove("hidden");
+});
+
+function closeCommonTasks() {
+  document.getElementById("common-tasks-popup").classList.add("hidden");
+}
 
 });
